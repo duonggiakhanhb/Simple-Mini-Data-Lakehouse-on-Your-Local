@@ -46,7 +46,7 @@ These technologies and tools work cohesively to establish a local data lakehouse
 1. **Clone Repository:**
 - Clone the repository to your local environment:
     ``` 
-    git clone https://github.com/your_username/your_repo.git
+    git clone https://github.com/duonggiakhanhb/Simple-Mini-Data-Lakehouse-on-Your-Local
     ```
 
 2. **Install Dependencies and Generate Data:**
