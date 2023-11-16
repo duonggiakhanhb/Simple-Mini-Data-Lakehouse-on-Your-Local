@@ -64,16 +64,22 @@ These technologies and tools work cohesively to establish a local data lakehouse
   docker-compose up -d minio
   ```
 - Login to MiniO with **username and password: minioadmin**
-- Create an access key and a bucket named "data-lakehouse" in MinIO.
-![Create Minio access key](assets/image/minio_accessKey.png)
+- <details>
+  <summary>Create an access key and a bucket named "data-lakehouse" in MinIO.</summary>
+
+  ![Create Minio access key](assets/image/minio_accessKey.png)
   Create a bucket named "data-lakehouse" in MinIO.
-![Create Minio bucket](assets/image/minio_bucket.png)
+  ![Create Minio bucket](assets/image/minio_bucket.png)
   After successfully creating the bucket, you will see the following screen.
-![Minio bucket created](assets/image/minio_empty.png)
+  ![Minio bucket created](assets/image/minio_empty.png)
+</details>
 
 4. **Configure Environment:**
-- Add MinIO access key and path to the `.env` file.
+<details>
+<summary>Add MinIO access key and path to the `.env` file.</summary>
+
 ![Configure environment](assets/image/env.png)
+</details>
 
 5. **Build and Start Services:**
 - Build and launch the services:
@@ -84,7 +90,16 @@ These technologies and tools work cohesively to establish a local data lakehouse
 
 6. **Setting up Dremio:**
 - Access the Dremio UI at `localhost:9047`.
-- Create a new account and add a source using metadata specified in the `.env` file:
+- More properties
+    ```
+    fs.s3a.path.style.access true
+    fs.s3a.endpoint minio:9000
+    dremio.s3.compat true
+    ```
+- <details>
+  <summary>Create a new account and add a source using metadata specified in the `.env` file.
+  </summary>
+
   - create a new account
   ![Create Dremio account](assets/image/dremio_account.png)
   - add a new source
@@ -102,32 +117,44 @@ These technologies and tools work cohesively to establish a local data lakehouse
     ![Add Dremio source properties](assets/image/dremio_source_properties.png)
   - After successfully adding the source, you will see the following screen. It's empty because we haven't loaded any data yet.
   ![Dremio source added](assets/image/dremio_source_added.png)
+</details>
 
 
 7. **Data Loading:**
-- Access the provided Spark notebook link.
-![Spark notebook link access](assets/image/spark_log.png)
-- Execute the `spark.ipynb` notebook to load data into the data lakehouse.
-![Spark home](assets/image/spark_home.png)
-![Spark notebook](assets/image/spark_notebook.png)
-- After completion, refresh Dremio to visualize the newly loaded data.
-![Dremio data loaded](assets/image/dremio_data_loaded.png)
+- <details>
+  <summary>Access the Spark notebook and execute the notebook.</summary>
+
+  - Access the provided Spark notebook link.
+  ![Spark notebook link access](assets/image/spark_log.png)
+  - Execute the `spark.ipynb` notebook to load data into the data lakehouse.
+  ![Spark home](assets/image/spark_home.png)
+  ![Spark notebook](assets/image/spark_notebook.png)
+  - After completion, refresh Dremio to visualize the newly loaded data.
+  ![Dremio data loaded](assets/image/dremio_data_loaded.png)
+</details>
 
 8. **Querying Data:**
-- Create a new View named **payment** in Dremio to query the data.
-  ```sql
-  SELECT DATE_DIFF(TO_DATE(TO_TIMESTAMP(TransactionDate, 'YYYY/MM/DD HH24:MI:SS', 1)), 1) AS TransactionDate, SUM(Amount) AS TotalAmount
-  FROM nessie.transactions
-  WHERE TransactionType='Payment'
-  GROUP BY TransactionDate
-  ```
-  Click **Save View as**, named it **payment** and save it in **nessie** source.
-![Dremio create view](assets/image/dremio_create_view.png)
+- <details>
+  <summary>Create a new View named **payment** in Dremio to query the data</summary>
+    
+    ```sql
+    SELECT DATE_DIFF(TO_DATE(TO_TIMESTAMP(TransactionDate, 'YYYY/MM/DD HH24:MI:SS', 1)), 1) AS TransactionDate, SUM(Amount) AS TotalAmount
+    FROM nessie.transactions
+    WHERE TransactionType='Payment'
+    GROUP BY TransactionDate
+    ```
+    Click **Save View as**, named it **payment** and save it in **nessie** source.
+  ![Dremio create view](assets/image/dremio_create_view.png)
+</details>
 
 9. **Dashboard with Apache Superset:**
 
-- Navigate to the Superset UI at `localhost:8088` and login with username and password: `admin`.
-![Superset login](assets/image/superset_login.png)
+- <details>
+  <summary> Navigate to the Superset UI at `localhost:8088` and login with username and password: `admin`.
+  </summary>
+  ![Superset login](assets/image/superset_login.png)
+  </details>
+  
 - Establish a new database connection, selecting Dremio as the database type.
   Click **Settings** -> **Database Connection** -> **+ Database** -> chossen **Orther** as the database type.
   Utilize the URL format: 
@@ -140,8 +167,13 @@ These technologies and tools work cohesively to establish a local data lakehouse
     ```
 ![Superset create database](assets/image/superset_create_database.png)
 
-- Add a new dataset using the **payment** view created in Dremio.
-![Superset create dataset](assets/image/superset_create_dataset.png)
+- <details>
+  <summary> Add a new dataset using the **payment** view created in Dremio.
+  </summary>
+
+  ![Superset create dataset](assets/image/superset_create_dataset.png)
+</details>
+
 - Create a new chart and add the dataset to visualize the data.
 ![Superset create chart](assets/image/superset_create_chart.png)
 
