@@ -180,5 +180,4 @@ Thank you for exploring this repository, and happy data processing!
 
 This project is licensed under the [MIT License](https://opensource.org/licenses/MIT) - see the [LICENSE](LICENSE) file for details.
 
-The MIT License is a permissive license that allows you to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the software. It is provided "as is," without warranty of any kind, express or implied.
 
