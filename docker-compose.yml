@@ -1,0 +1,76 @@
+version: "3.9"
+
+services:
+  dremio:
+    image: dremio/dremio-oss:latest
+    ports:
+      - 9047:9047
+      - 31010:31010
+      - 32010:32010
+    container_name: dremio
+    networks:
+      iceberg_env:
+        ipv4_address: 172.18.0.2  # Choose a suitable IP address
+
+  minioserver:
+    image: minio/minio
+    ports:
+      - 9000:9000
+      - 9001:9001
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+      MINIO_ACCESS_KEY: MINIO_ROOT_USER
+      MINIO_SECRET_KEY: MINIO_ROOT_PASSWORD
+    container_name: minio
+    command: server /data --console-address ":9001"
+    networks:
+      iceberg_env:
+        ipv4_address: 172.18.0.3  # Choose a suitable IP address
+
+  spark-notebook:
+    image: alexmerced/spark33-notebook
+    ports: 
+      - 8888:8888
+    env_file: .env
+    volumes:
+      - ./db/:/home/docker/db/
+      - ./spark.ipynb:/home/docker/spark.ipynb
+    container_name: spark-notebook
+    networks:
+      iceberg_env:
+        ipv4_address: 172.18.0.4  # Choose a suitable IP address
+
+  nessie:
+    image: projectnessie/nessie
+    container_name: nessie
+    ports:
+      - "19120:19120"
+    networks:
+      iceberg_env:
+        ipv4_address: 172.18.0.5  # Choose a suitable IP address
+
+
+  superset:
+    build:
+      context: ./superset
+      dockerfile: dockerfile
+    container_name: superset
+    environment:
+      - ADMIN_USERNAME=admin
+      - ADMIN_EMAIL=admin@superset.com
+      - ADMIN_PASSWORD=admin
+    ports:
+      - '8088:8088'
+    volumes:
+      - ./db/:/home/docker/db/
+    networks:
+      iceberg_env:
+        ipv4_address: 172.18.0.6
+
+networks:
+  iceberg_env:
+    driver: bridge 
+    ipam:
+      config:
+        - subnet: 172.18.0.0/16
